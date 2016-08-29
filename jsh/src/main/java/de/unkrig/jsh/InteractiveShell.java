@@ -28,6 +28,7 @@ package de.unkrig.jsh;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -89,7 +90,7 @@ class InteractiveShell extends DemoBase {
     throws IOException, CompileException, InvocationTargetException {
 
         // Execute the RC file (typically "$HOME/jshrc").
-        {
+        JSHRC: {
             IScriptEvaluator se = new ScriptEvaluator();
 
             se.setDefaultImports(defaultImports);
@@ -97,7 +98,13 @@ class InteractiveShell extends DemoBase {
             se.setThrownExceptions(thrownExceptions);
 
             // Scan, parse and compile the script file.
-            InputStream is = new FileInputStream(InteractiveShell.JSHRC_FILE);
+            InputStream is;
+            try {
+                is = new FileInputStream(InteractiveShell.JSHRC_FILE);
+            } catch (FileNotFoundException fnfe) {
+                break JSHRC;
+            }
+
             try {
 
                 se.cook(InteractiveShell.JSHRC_FILE.toString(), is, optionalEncoding);
