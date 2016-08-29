@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>jsh</name>
-  <url>http://maven.apache.org</url>
+  <url>https://github.com/janino-compiler/jsh</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,10 +30,24 @@
   		<artifactId>janino</artifactId>
   		<version>3.0.1</version>
   	</dependency>
-  	<dependency>
-  		<groupId>org.codehaus.janino</groupId>
-  		<artifactId>commons-compiler</artifactId>
-  		<version>3.0.1</version>
-  	</dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>de.unkrig.jsh.Main</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <description>jsh - the &quot;Java Shell&quot;.</description>
 </project>
