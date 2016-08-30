@@ -79,7 +79,9 @@ class StatementEvaluator extends ClassBodyEvaluator {
         cd = this.addPackageMemberClassDeclaration(parser.location(), compilationUnit);
 
         // Add one single-statement method to the class declaration.
-        cd.addDeclaredMethod(this.makeMethodDeclaration(parser.location(), this.optionalThrownExceptions, parser.parseStatement()));
+        cd.addDeclaredMethod(
+            this.makeMethodDeclaration(parser.location(), this.optionalThrownExceptions, parser.parseStatement())
+        );
 
         // Compile and load the compilation unit.
         Class<?> c = this.compileToClass(compilationUnit);
@@ -105,11 +107,13 @@ class StatementEvaluator extends ClassBodyEvaluator {
      *   </li>
      *   <li>A block</li>
      * </ul>
-     *
-     * @param returnType Return type of the declared method
      */
     protected Java.MethodDeclarator
-    makeMethodDeclaration(Location location, @Nullable Class<?>[] optionalThrownExceptions, Java.BlockStatement statement) {
+    makeMethodDeclaration(
+        Location             location,
+        @Nullable Class<?>[] optionalThrownExceptions,
+        Java.BlockStatement  statement
+    ) {
 
         Java.FunctionDeclarator.FormalParameters fps = new Java.FunctionDeclarator.FormalParameters(
             location,

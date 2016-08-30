@@ -26,7 +26,8 @@
 
 package de.unkrig.jsh.util;
 
-public class Cloneable2<T extends Cloneable2<?>> implements Cloneable {
+public
+class Cloneable2<T extends Cloneable2<?>> implements Cloneable {
 
     public final T
     clone2() {

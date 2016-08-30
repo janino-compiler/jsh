@@ -34,7 +34,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,8 +56,8 @@ import org.codehaus.janino.Scanner.TokenType;
 import org.codehaus.janino.ScriptEvaluator;
 import org.codehaus.janino.Visitor.ImportVisitor;
 
-import de.unkrig.commons.lang.StringUtil;
 import de.unkrig.commons.lang.protocol.ProducerWhichThrows;
+import de.unkrig.commons.util.ArrayUtil;
 import de.unkrig.jsh.command.Cd;
 import de.unkrig.jsh.command.Echo;
 import de.unkrig.jsh.command.Ls;
@@ -80,10 +79,13 @@ class InteractiveShell extends DemoBase {
     private static final File JSHRC_FILE       = new File(InteractiveShell.USER_HOME_DIR, ".jshrc");
 
     /**
-     * @param defaultImports             Effective for the RC script and the entered commands
+     * @param defaultImports             These add to the sytem import "java.lang"; effective for the RC script and the
+     *                                   entered commands
+     * @param thrownExceptions           The exceptions that the RC script and the entered commands may throw
      * @param optionalEncoding           Effective for the RC script
      * @throws InvocationTargetException The RC script or an entered command threw one of the
      *                                   <var>thrownExceptions</var>
+     * @throws CompileException          An error occurred when the RC script was read, scanned, parsed and compiled
      */
     public static void
     run(String[] defaultImports, Class<?>[] thrownExceptions, @Nullable String optionalEncoding)
@@ -138,6 +140,7 @@ class InteractiveShell extends DemoBase {
             });
         }
 
+        // Wrap the JLINE "ConsoleReader" as a Producer<String>.
         ProducerWhichThrows<String, IOException> lp = new ProducerWhichThrows<String, IOException>() {
 
             @Override @Nullable public String
@@ -148,7 +151,7 @@ class InteractiveShell extends DemoBase {
             }
         };
 
-        Parser parser = new Parser(new Scanner(null, InteractiveShell.lineProducerReader(lp)));
+        final Parser parser = new Parser(new Scanner(null, InteractiveShell.lineProducerReader(lp)));
 
         // Use than JANINO implementation of IScriptEvaluator, because only that offers the "setMinimal()" feature.
         StatementEvaluator se = new StatementEvaluator();
@@ -163,35 +166,39 @@ class InteractiveShell extends DemoBase {
             // Scan, parse, compile and load one statement.
             cr.setPrompt("$ ");
             try {
-                if (parser.peek().type == TokenType.END_OF_INPUT) break;
-
+                if (parser.peek().type == TokenType.END_OF_INPUT) {
+                    break;
+                } else
+                if (parser.peek("package")) {
+                    se.setClassName(parser.parsePackageDeclaration().packageName + ".SC");
+                } else
                 if (parser.peek("import")) {
                     ImportDeclaration id = parser.parseImportDeclaration();
+
                     String imporT = id.accept(new ImportVisitor<String, RuntimeException>() {
 
                         @Override @Nullable public String
                         visitSingleTypeImportDeclaration(SingleTypeImportDeclaration stid) {
-                            return StringUtil.join(Arrays.asList(stid.identifiers), ".");
+                            return InteractiveShell.join(stid.identifiers, ".");
                         }
 
                         @Override @Nullable public String
                         visitTypeImportOnDemandDeclaration(TypeImportOnDemandDeclaration tiodd) {
-                            return StringUtil.join(Arrays.asList(tiodd.identifiers), ".") + ".*";
+                            return InteractiveShell.join(tiodd.identifiers, ".") + ".*";
                         }
 
                         @Override @Nullable public String
                         visitSingleStaticImportDeclaration(SingleStaticImportDeclaration ssid) {
-                            return "static " + StringUtil.join(Arrays.asList(ssid.identifiers), ".");
+                            return "static " + InteractiveShell.join(ssid.identifiers, ".");
                         }
 
                         @Override @Nullable public String
                         visitStaticImportOnDemandDeclaration(StaticImportOnDemandDeclaration siodd) {
-                            return "static " + StringUtil.join(Arrays.asList(siodd.identifiers), ".") + ".*";
+                            return "static " + InteractiveShell.join(siodd.identifiers, ".") + ".*";
                         }
                     });
 
-                    defaultImports = Arrays.copyOf(defaultImports, defaultImports.length + 1);
-                    defaultImports[defaultImports.length - 1] = imporT;
+                    defaultImports = ArrayUtil.append(defaultImports, imporT);
                     se.setDefaultImports(defaultImports);
                 } else {
                     se.cook(parser);
@@ -225,8 +232,8 @@ class InteractiveShell extends DemoBase {
             @Nullable String line = "";
             int              offset;
 
-            @Override
-            public int read(@Nullable char[] cbuf, int off, int len) throws IOException {
+            @Override public int
+            read(@Nullable char[] cbuf, int off, int len) throws IOException {
                 if (len <= 0) return 0;
 
                 String l = this.line;
@@ -239,7 +246,7 @@ class InteractiveShell extends DemoBase {
                         return -1;
                     }
 
-                    this.line = l + InteractiveShell.LINE_SEPARATOR;
+                    this.line   = l + InteractiveShell.LINE_SEPARATOR;
                     this.offset = 0;
                 }
 
@@ -256,7 +263,7 @@ class InteractiveShell extends DemoBase {
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    public static abstract
+    public abstract static
     class Base {
 
         // "Command fields".
@@ -305,5 +312,18 @@ class InteractiveShell extends DemoBase {
          */
         @SuppressWarnings("rawtypes") public static Set
         set() { return new HashSet(); }
+    }
+
+    /**
+     * Converts all <var>elements</var> to string and concatenates these, separated by the <var>glue</var>.
+     */
+    private static String
+    join(Object[] elements, String glue) {
+        if (elements.length == 0) return "";
+        if (elements.length == 1) return String.valueOf(elements[0]);
+
+        StringBuilder sb = new StringBuilder().append(elements[0]).append(glue).append(elements[1]);
+        for (int i = 2; i < elements.length; i++) sb.append(glue).append(elements[i]);
+        return sb.toString();
     }
 }

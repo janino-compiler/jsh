@@ -132,9 +132,9 @@ class Main extends DemoBase {
             }
 
             InteractiveShell.run(
-                defaultImports.toArray(new String[defaultImports.size()]),
-                thrownExceptions.toArray(new Class<?>[thrownExceptions.size()]),
-                optionalEncoding
+                defaultImports.toArray(new String[defaultImports.size()]),       // defaultImports
+                thrownExceptions.toArray(new Class<?>[thrownExceptions.size()]), // thrownExceptions
+                optionalEncoding                                                 // optionalEncoding
             );
         } else {
 
