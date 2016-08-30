@@ -34,6 +34,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.codehaus.commons.nullanalysis.Nullable;
 
@@ -73,7 +76,8 @@ class Brief {
      * <ul>
      *   <li>A {@code null} subject results in <em>nothing</em> being printed.</li>
      *   <li>Arrays (including primitive arrays) result in one line being printed per element.</li>
-     *   <li>Collections result in one line being printed per element.</li>
+     *   <li>A {@link Collection} <var>subject</var> results in one line being printed per collection element.</li>
+     *   <li>A {@link Set}s <var>subject</var> results in one line being printed per entry, in the form "{@code key=value}".</li>
      *   <li>All other subjects converted with {@link Object#toString()}, and then printed in one line.</li>
      * </ul>
      */
@@ -88,12 +92,18 @@ class Brief {
     }
 
     /**
-     * Maps the <var>subject</var> to zero, one or more subjects, and has the <var>destination</var> consume these.
+     * Maps the <var>subject</var> to zero, one or more subjects, and lets the <var>destination</var> consume these.
      * <ul>
-     *   <li>A {@code null} subject results in <em>zero</em> subjects.</li>
-     *   <li>An array subject (including primitive arrays) result in one subject per arrays element.</li>
-     *   <li>A {@link Collection} subject result in one subject per collection element.</li>
-     *   <li>All other subjects are passed through.</li>
+     *   <li>A {@code null} subject results in <em>zero</em> destination subjects.</li>
+     *   <li>
+     *     An array <var>subject</var> (including primitive arrays) results in one destination subject per element.
+     *   </li>
+     *   <li>A {@link Collection} <var>subject</var> results in one destination subject per collection element.</li>
+     *   <li>
+     *     A {@link Set} <var>subject</var> results in one destination subject per entry, in the form "{@code
+     *     key=value}".
+     *   </li>
+     *   <li>Any other <var>subject</var> is simply passed through.</li>
      * </ul>
      */
     public static void
@@ -116,6 +126,13 @@ class Brief {
 
         if (subject instanceof Collection) {
             for (Object e : (Collection<?>) subject) destination.consume(e);
+            return;
+        }
+
+        if (subject instanceof Map) {
+            for (Entry<?, ?> e : ((Map<?, ?>) subject).entrySet()) {
+                destination.consume(e.getKey() + "=" + e.getValue());
+            }
             return;
         }
 
