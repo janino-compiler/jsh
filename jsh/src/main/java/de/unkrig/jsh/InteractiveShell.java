@@ -151,8 +151,6 @@ class InteractiveShell extends DemoBase {
             }
         };
 
-        final Parser parser = new Parser(new Scanner(null, InteractiveShell.lineProducerReader(lp)));
-
         // Use than JANINO implementation of IScriptEvaluator, because only that offers the "setMinimal()" feature.
         StatementEvaluator se = new StatementEvaluator();
         se.setDefaultImports(defaultImports);
@@ -162,6 +160,10 @@ class InteractiveShell extends DemoBase {
         System.err.println("Welcome, stranger, and speak!");
 
         for (;;) {
+
+            // Set up a new parser for each statement, because on parse errors we want to discard the tokens
+            // that are remaining on the command line.
+            final Parser parser = new Parser(new Scanner(null, InteractiveShell.lineProducerReader(lp)));
 
             // Scan, parse, compile and load one statement.
             cr.setPrompt("$ ");
