@@ -13,29 +13,29 @@ These properties open up a whole range of new use cases which you would normally
 
 As it is worth a thousand words, here's an example:
 
-    $ jsh
-    Welcome, stranger, and speak!
-    $ System.out.println("HELLO WORLD");
-    HELLO WORLD
-    $ for (int i = 0; i < 3; i++) {
-    >     System.out.println("HELLO WORLD");
-    > }
-    HELLO WORLD
-    HELLO WORLD
-    HELLO WORLD
-    $ for (String s : new String[] { "a", "b", "c" }) {
-    >     System.out.println(s);
-    > }
-    a
-    b
-    c
-    $
-    $ ls();
-    .bashrc
-    .bash_history
-    .bash_profile
-    .jshrc
-    $
-    exit();
-
+```java
+Welcome, stranger, and speak!
+$ System.out.println("HELLO WORLD");
+HELLO WORLD
+$ for (int i = 0; i < 3; i++) {
+>     System.out.println("HELLO WORLD");
+> }
+HELLO WORLD
+HELLO WORLD
+HELLO WORLD
+$ for (String s : new String[] { "a", "b", "c" }) {
+>     System.out.println(s);
+> }
+a
+b
+c
+$
+$ ls();
+.bashrc
+.bash_history
+.bash_profile
+.jshrc
+$
+exit();
+```
 If you find the concept useful, feel free to use JSH, give feedback, and contribute! The best way to contact me is via a GITHUB issue.
