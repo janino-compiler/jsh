@@ -201,16 +201,13 @@ class InteractiveShell extends DemoBase {
                     defaultImports = ArrayUtil.append(defaultImports, imporT);
                     se.setDefaultImports(defaultImports);
                 } else {
-                    se.cook(parser);
-                }
-            } catch (CompileException ce) {
-                System.err.println(ce.getLocalizedMessage());
-                continue;
-            }
 
-            // Evaluate script with actual parameter values.
-            try {
-                se.execute();
+                    // Parse and compile one statement.
+                    se.cook(parser);
+
+                    // Evaluate the compiled statement.
+                    se.execute();
+                }
             } catch (Exception e) {
                 System.out.flush();
                 System.err.println(e.getLocalizedMessage());
