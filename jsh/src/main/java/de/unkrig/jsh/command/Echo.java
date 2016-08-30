@@ -33,12 +33,18 @@ import org.codehaus.commons.nullanalysis.Nullable;
 
 import de.unkrig.jsh.util.Cloneable2;
 
+/**
+ * Prints its arguments.
+ */
 public final
 class Echo extends Cloneable2<Echo> {
 
     private PrintStream ps = System.out;
     private boolean     n;
 
+    /**
+     * Implements the "{@code -n}" option of the command.
+     */
     public Echo
     n() {
         Echo result = this.clone2();
@@ -46,6 +52,9 @@ class Echo extends Cloneable2<Echo> {
         return result;
     }
 
+    /**
+     * Redirects the output to a different {@link OutputStream} (initially, STDOUT is the destination stream).
+     */
     public Echo
     stream(OutputStream os) {
         Echo result = this.clone2();
@@ -58,7 +67,7 @@ class Echo extends Cloneable2<Echo> {
      * Eventually prints a line break, unless the {@link #n()} option is configured.
      */
     public void
-    $(@Nullable Object... args) {
+    $(@Nullable Object... args) { // SUPPRESS CHECKSTYLE MethodName
 
         if (args != null) {
 

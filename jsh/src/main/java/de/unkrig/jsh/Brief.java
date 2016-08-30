@@ -74,11 +74,20 @@ class Brief {
     /**
      * Implements the "jsh standard way" of printing objects.
      * <ul>
-     *   <li>A {@code null} subject results in <em>nothing</em> being printed.</li>
-     *   <li>Arrays (including primitive arrays) result in one line being printed per element.</li>
-     *   <li>A {@link Collection} <var>subject</var> results in one line being printed per collection element.</li>
-     *   <li>A {@link Set}s <var>subject</var> results in one line being printed per entry, in the form "{@code key=value}".</li>
-     *   <li>All other subjects converted with {@link Object#toString()}, and then printed in one line.</li>
+     *   <li>A {@code null} <var>subject</var> results in <em>nothing</em> being printed.</li>
+     *   <li>
+     *     An array <var>subject</var> (including a primitive array) results in one line being printed per element.
+     *   </li>
+     *   <li>
+     *     A {@link Collection} <var><var>subject</var></var> results in one line being printed per collection element.
+     *   </li>
+     *   <li>
+     *     A {@link Set} <var>subject</var> results in one line being printed per entry, in the form "{@code
+     *     key=value}".
+     *   </li>
+     *   <li>
+     *     Any other <var>subject</var> is converted with {@link Object#toString()}, and then printed in one line.
+     *   </li>
      * </ul>
      */
     public static void

@@ -26,9 +26,19 @@
 
 package de.unkrig.jsh.util;
 
+/**
+ * The painfully missing class that implements {@link Cloneable} and provides a {@link #clone()} method with the
+ * proper return type ({@code T}, not {@link Object}).
+ *
+ * @param <T>
+ */
 public
 class Cloneable2<T extends Cloneable2<?>> implements Cloneable {
 
+    /**
+     * Identical with {@link #clone()}, but (A) does not declare a {@link CloneNotSupportedException} and (B) returns
+     * an object of type {@code T} (not {@link Object}).
+     */
     public final T
     clone2() {
         try {

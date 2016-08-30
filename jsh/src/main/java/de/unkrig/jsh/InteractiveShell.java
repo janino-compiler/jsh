@@ -262,11 +262,16 @@ class InteractiveShell extends DemoBase {
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
+    /**
+     * The base class for the classes generated from the entered commands; has a set of "command fields" (like {@code
+     * ls}, "shorthand commands" (like {@code exit()}) and "utility methods" (like {@link #glob(String...)}.
+     */
     public abstract static
     class Base {
 
         // "Command fields".
 
+        // SUPPRESS CHECKSTYLE ConstantName|JavadocVariable:4
         public static final Cd   cd   = new Cd();
         public static final Echo echo = new Echo();
         public static final Ls   ls   = new Ls();

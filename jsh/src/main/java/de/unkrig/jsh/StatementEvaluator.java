@@ -35,6 +35,7 @@ import org.codehaus.commons.compiler.Location;
 import org.codehaus.commons.nullanalysis.Nullable;
 import org.codehaus.janino.ClassBodyEvaluator;
 import org.codehaus.janino.Java;
+import org.codehaus.janino.Java.Statement;
 import org.codehaus.janino.Mod;
 import org.codehaus.janino.Parser;
 import org.codehaus.janino.Scanner;
@@ -68,25 +69,32 @@ class StatementEvaluator extends ClassBodyEvaluator {
         this.cook(new Parser(scanner));
     }
 
+    /**
+     * Parses one statement with the given <var>parser</var> generates a class with a single method that contains that
+     * statement.
+     */
     public void
     cook(Parser parser) throws CompileException, IOException {
+
+        // arse the statement.
+        Statement statement = parser.parseStatement();
 
         // Create a compilation unit.
         Java.CompilationUnit compilationUnit = this.makeCompilationUnit(parser);
 
-        // Add one class declaration.
+        // Add one class declaration to the compilation unit.
         final Java.AbstractClassDeclaration
         cd = this.addPackageMemberClassDeclaration(parser.location(), compilationUnit);
 
         // Add one single-statement method to the class declaration.
         cd.addDeclaredMethod(
-            this.makeMethodDeclaration(parser.location(), this.optionalThrownExceptions, parser.parseStatement())
+            this.makeMethodDeclaration(parser.location(), this.optionalThrownExceptions, statement)
         );
 
         // Compile and load the compilation unit.
         Class<?> c = this.compileToClass(compilationUnit);
 
-        // Find the statementmethod by name.
+        // Find the statement method by name.
         try {
             this.result = c.getDeclaredMethod(StatementEvaluator.METHOD_NAME);
         } catch (NoSuchMethodException ex) {

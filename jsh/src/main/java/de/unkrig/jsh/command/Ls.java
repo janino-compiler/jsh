@@ -73,7 +73,7 @@ class Ls implements Cloneable {
      * Lists the members of the current working directory.
      */
     public void
-    $() {
+    $() { // SUPPRESS CHECKSTYLE MethodName
         for (String memberName : new File(".").list()) this.printMember(new File(memberName));
     }
 
@@ -87,10 +87,13 @@ class Ls implements Cloneable {
      * </ul>
      */
     public void
-    $(File... files) { this.$(Arrays.asList(files)); }
+    $(File... files) { this.$(Arrays.asList(files)); } // SUPPRESS CHECKSTYLE MethodName
 
+    /**
+     * Prints information about the <var>files</var>.
+     */
     public void
-    $(Collection<File> files) {
+    $(Collection<File> files) { // SUPPRESS CHECKSTYLE MethodName
 
         if (files.isEmpty()) {
             this.$();
@@ -137,7 +140,7 @@ class Ls implements Cloneable {
         }
     }
 
-    public void
+    private void
     print(File file) {
 
         if (file.isDirectory()) {

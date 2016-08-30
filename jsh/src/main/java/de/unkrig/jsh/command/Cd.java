@@ -38,17 +38,17 @@ class Cd {
      * Changes the current working directory to the user's home directory.
      */
     public void
-    $() { this.$(System.getProperty("user.home")); }
+    $() { this.$(System.getProperty("user.home")); } // SUPPRESS CHECKSTYLE MethodName
 
     /**
      * Sets a new current working directory.
      */
     public void
-    $(String dirName) { this.$(new File(dirName)); }
+    $(String dirName) { this.$(new File(dirName)); } // SUPPRESS CHECKSTYLE MethodName
 
     /**
      * Sets a new current working directory.
      */
     public void
-    $(File dir) { System.setProperty("user.dir", dir.getAbsolutePath()); }
+    $(File dir) { System.setProperty("user.dir", dir.getAbsolutePath()); } // SUPPRESS CHECKSTYLE MethodName
 }

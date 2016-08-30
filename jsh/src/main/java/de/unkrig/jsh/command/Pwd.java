@@ -31,7 +31,7 @@ import de.unkrig.jsh.Brief;
 /**
  * Changes the current working directory.
  */
-public final
+public final // SUPPRESS CHECKSTYLE HideUtilityClassConstructor
 class Pwd {
 
     /**
@@ -39,5 +39,5 @@ class Pwd {
      * of the current working directory.
      */
     public static void
-    $() { Brief.print(System.getProperty("user.dir"), System.out); }
+    $() { Brief.print(System.getProperty("user.dir"), System.out); } // SUPPRESS CHECKSTYLE MethodName
 }
