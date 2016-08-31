@@ -70,8 +70,8 @@ class StatementEvaluator extends ClassBodyEvaluator {
     }
 
     /**
-     * Parses one statement with the given <var>parser</var> generates a class with a single method that contains that
-     * statement.
+     * Parses any IMPORT declarations, and then exactly <em>one</em> statement, then generates a class with a single
+     * method that contains that statement.
      */
     public void
     cook(Parser parser) throws CompileException, IOException {
