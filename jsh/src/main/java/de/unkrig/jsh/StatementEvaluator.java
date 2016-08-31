@@ -76,11 +76,11 @@ class StatementEvaluator extends ClassBodyEvaluator {
     public void
     cook(Parser parser) throws CompileException, IOException {
 
-        // arse the statement.
-        Statement statement = parser.parseStatement();
-
-        // Create a compilation unit.
+        // Create a compilation unit and parse any import declarations.
         Java.CompilationUnit compilationUnit = this.makeCompilationUnit(parser);
+
+        // Parse the statement.
+        Statement statement = parser.parseStatement();
 
         // Add one class declaration to the compilation unit.
         final Java.AbstractClassDeclaration
