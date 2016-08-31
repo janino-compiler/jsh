@@ -294,25 +294,33 @@ class InteractiveShell extends DemoBase {
 
         public static void out(@Nullable Object subject) { Brief.print(subject, System.out); }
 
+        public static void pwd() { Pwd.$(); }
+
         // Utility methods.
+
+        /**
+         * @return The current working directory
+         */
+        public static File
+        getcwd() { return new File(System.getProperty("user.dir")); }
 
         @Nullable public static Collection<? extends File>
         glob(@Nullable String... globs) { return globs == null ? null : Brief.glob(null, globs); }
 
         /**
-         * Creates and returns a modifiable, empty {@link List}. Shorthand for "{@code new ArrayList()}".
+         * @return A modifiable, empty {@link List}; shorthand for "{@code new ArrayList()}"
          */
         @SuppressWarnings("rawtypes") public static List
         list() { return new ArrayList(); }
 
         /**
-         * Creates and returns a modifiable, empty {@link Map}. Shorthand for "{@code new HashMap()}".
+         * @return A modifiable, empty {@link Map}; shorthand for "{@code new HashMap()}"
          */
         @SuppressWarnings("rawtypes") public static Map
         map() { return new HashMap(); }
 
         /**
-         * Creates and returns a modifiable, empty {@link Set}. Shorthand for "{@code new HashSet()}".
+         * @return A modifiable, empty {@link Set}; shorthand for "{@code new HashSet()}"
          */
         @SuppressWarnings("rawtypes") public static Set
         set() { return new HashSet(); }
