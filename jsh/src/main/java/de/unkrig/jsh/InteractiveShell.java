@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,12 +51,14 @@ import org.codehaus.janino.Java.CompilationUnit.SingleStaticImportDeclaration;
 import org.codehaus.janino.Java.CompilationUnit.SingleTypeImportDeclaration;
 import org.codehaus.janino.Java.CompilationUnit.StaticImportOnDemandDeclaration;
 import org.codehaus.janino.Java.CompilationUnit.TypeImportOnDemandDeclaration;
+import org.codehaus.janino.Java.ReferenceType;
 import org.codehaus.janino.Parser;
 import org.codehaus.janino.Scanner;
 import org.codehaus.janino.Scanner.TokenType;
 import org.codehaus.janino.ScriptEvaluator;
 import org.codehaus.janino.Visitor.ImportVisitor;
 
+import de.unkrig.commons.lang.StringUtil;
 import de.unkrig.commons.lang.protocol.ProducerWhichThrows;
 import de.unkrig.commons.util.ArrayUtil;
 import de.unkrig.jsh.command.Cd;
@@ -79,6 +82,32 @@ class InteractiveShell extends DemoBase {
     private static final File JSHRC_FILE       = new File(InteractiveShell.USER_HOME_DIR, ".jshrc");
 
     /**
+     * Executes the ".jshrc" file, then reads statements from the console and executes them.
+     * <p>
+     *   Errors that occur as the ".jshrc" file is processed are not caught; errors that occur as statements are read
+     *   <em>from the console</em>, scanned, parsed, compiled an executed are reported on the console in a
+     *   user-friendly fashion, and otherwise ignored.
+     * </p>
+     * <p>
+     *   In addition to any "normal" Java statement, the following constructs are supported:
+     * </p>
+     * <ul>
+     *   <li>
+     *     A PACKAGE declaration (JLS7 7.4) changes the name of the class that is generated for all statements that are
+     *     entered afterwards, until another PACKAGE declaration is entered.
+     *   </li>
+     *   <li>
+     *     A THROWS statement (like "{@code throws java.lang.Exception;}") allows all statements that are entered
+     *     afterwards to throw that exception. (Notice that the Java language knows no "throws statement"; only the
+     *     {@link InteractiveShell} supports that concept.) There is no way to remove a previously declared exception.
+     *     The exception class name must be fully qualified.
+     *   </li>
+     *   <li>
+     *     An IMPORT declaration (JLS7 7.5) applies to all statements that will are entered afterwards. There is no way
+     *     to remove a previously declared IMPORT.
+     *   </li>
+     * </ul>
+     *
      * @param defaultImports             These add to the sytem import "java.lang"; effective for the RC script and the
      *                                   entered commands
      * @param thrownExceptions           The exceptions that the RC script and the entered commands may throw
@@ -151,7 +180,6 @@ class InteractiveShell extends DemoBase {
             }
         };
 
-        // Use than JANINO implementation of IScriptEvaluator, because only that offers the "setMinimal()" feature.
         StatementEvaluator se = new StatementEvaluator();
         se.setDefaultImports(defaultImports);
         se.setExtendedClass(Base.class);
@@ -174,7 +202,24 @@ class InteractiveShell extends DemoBase {
                 if (parser.peek("package")) {
                     se.setClassName(parser.parsePackageDeclaration().packageName + ".SC");
                 } else
+                if (parser.peekRead("throws")) {
+                    ReferenceType[] tes = parser.parseReferenceTypeList();
+                    parser.read(";");
+
+                    for (ReferenceType te : tes) {
+                        Class<?> tec = InteractiveShell.class.getClassLoader().loadClass(
+                            StringUtil.join(Arrays.asList(te.identifiers), ".")
+                        );
+                        thrownExceptions = ArrayUtil.append(thrownExceptions, tec);
+                    }
+
+                    se.setThrownExceptions(thrownExceptions);
+                } else
                 if (parser.peek("import")) {
+
+                    // "StatementEvaluator.cook()" would ALSO parse import declarations, but then they'd only be
+                    // effective for ONE statement. Thus we parse them here and add them to the "default imports"
+                    // of the StatementEvaluator.
                     ImportDeclaration id = parser.parseImportDeclaration();
 
                     String imporT = id.accept(new ImportVisitor<String, RuntimeException>() {
@@ -210,10 +255,16 @@ class InteractiveShell extends DemoBase {
                     // Evaluate the compiled statement.
                     se.execute();
                 }
+            } catch (CompileException ce) {
+                System.out.flush();
+
+                // For CompileExceptions, report only the MESSAGE, not the exception type.
+                System.err.println(ce.getLocalizedMessage());
             } catch (Exception e) {
                 System.out.flush();
-                System.err.println(e.getLocalizedMessage());
-                continue;
+
+                // An InvocationTargetException from "sw.execute()", or any other exception (e.g. IOException).
+                e.printStackTrace();
             }
 
             System.out.flush();
