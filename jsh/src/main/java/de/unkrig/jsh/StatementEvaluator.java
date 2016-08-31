@@ -35,7 +35,6 @@ import org.codehaus.commons.compiler.Location;
 import org.codehaus.commons.nullanalysis.Nullable;
 import org.codehaus.janino.ClassBodyEvaluator;
 import org.codehaus.janino.Java;
-import org.codehaus.janino.Java.Statement;
 import org.codehaus.janino.Mod;
 import org.codehaus.janino.Parser;
 import org.codehaus.janino.Scanner;
@@ -54,10 +53,10 @@ class StatementEvaluator extends ClassBodyEvaluator {
 
     @Nullable private Method result; // null=uncooked
 
-    @Nullable private Class<?>[] optionalThrownExceptions;
+    private Class<?>[] thrownExceptions = new Class<?>[0];
 
     public void
-    setThrownExceptions(Class<?>[] thrownExceptions) { this.optionalThrownExceptions = thrownExceptions.clone(); }
+    setThrownExceptions(Class<?>[] thrownExceptions) { this.thrownExceptions = thrownExceptions; }
 
     /**
      * Override {@link ClassBodyEvaluator#cook(Scanner)} so that the evaluator does parse a class body, but
@@ -70,26 +69,28 @@ class StatementEvaluator extends ClassBodyEvaluator {
     }
 
     /**
-     * Parses any IMPORT declarations, and then exactly <em>one</em> statement, then generates a class with a single
-     * method that contains that statement.
+     * Parses any IMPORT declarations, any THROWS declarations, and then exactly <em>one</em> statement, then generates
+     * a class with a single method that contains that statement.
      */
     public void
     cook(Parser parser) throws CompileException, IOException {
 
-        // Create a compilation unit and parse any import declarations.
+        // Create a compilation unit and parse any IMPORT declarations.
         Java.CompilationUnit compilationUnit = this.makeCompilationUnit(parser);
 
         // Parse the statement.
-        Statement statement = parser.parseStatement();
+        Java.Statement statement = parser.parseStatement();
 
         // Add one class declaration to the compilation unit.
         final Java.AbstractClassDeclaration
         cd = this.addPackageMemberClassDeclaration(parser.location(), compilationUnit);
 
         // Add one single-statement method to the class declaration.
-        cd.addDeclaredMethod(
-            this.makeMethodDeclaration(parser.location(), this.optionalThrownExceptions, statement)
-        );
+        cd.addDeclaredMethod(this.makeMethodDeclaration(
+            parser.location(),                                             // location
+            this.classesToTypes(parser.location(), this.thrownExceptions), // thrownExceptions
+            statement                                                      // statement
+        ));
 
         // Compile and load the compilation unit.
         Class<?> c = this.compileToClass(compilationUnit);
@@ -117,11 +118,7 @@ class StatementEvaluator extends ClassBodyEvaluator {
      * </ul>
      */
     protected Java.MethodDeclarator
-    makeMethodDeclaration(
-        Location             location,
-        @Nullable Class<?>[] optionalThrownExceptions,
-        Java.BlockStatement  statement
-    ) {
+    makeMethodDeclaration(Location location, Java.Type[] thrownExceptions, Java.BlockStatement statement) {
 
         Java.FunctionDeclarator.FormalParameters fps = new Java.FunctionDeclarator.FormalParameters(
             location,
@@ -130,18 +127,18 @@ class StatementEvaluator extends ClassBodyEvaluator {
         );
 
         return new Java.MethodDeclarator(
-            location,                                                // location
-            null,                                                    // optionalDocComment
-            new Java.Modifiers(                                      // modifiers
+            location,                                              // location
+            null,                                                  // optionalDocComment
+            new Java.Modifiers(                                    // modifiers
                 (short) (Mod.PUBLIC | Mod.STATIC),
                 new Java.Annotation[0]
             ),
-            null,                                                    // optionalTypeParameters
-            this.classToType(location, void.class),                  // type
-            StatementEvaluator.METHOD_NAME,                          // name
-            fps,                                                     // formalParameters
-            this.classesToTypes(location, optionalThrownExceptions), // thrownExceptions
-            Collections.singletonList(statement)                     // optionalStatements
+            null,                                                  // optionalTypeParameters
+            new Java.PrimitiveType(location, Java.Primitive.VOID), // type
+            StatementEvaluator.METHOD_NAME,                        // name
+            fps,                                                   // formalParameters
+            thrownExceptions,                                      // thrownExceptions
+            Collections.singletonList(statement)                   // optionalStatements
         );
     }
 

@@ -144,26 +144,37 @@ class Main extends DemoBase {
                 compilerFactoryId,
                 scriptFile,
                 optionalEncoding,
-                defaultImports,
+                defaultImports.toArray(new String[defaultImports.size()]),
                 returnType,
-                parameterNames,
-                parameterTypes,
-                thrownExceptions,
+                parameterNames.toArray(new String[parameterNames.size()]),
+                parameterTypes.toArray(new Class<?>[parameterTypes.size()]),
+                thrownExceptions.toArray(new Class<?>[thrownExceptions.size()]),
                 Arrays.copyOfRange(args, i, args.length) // args
             );
         }
     }
 
+    /**
+     * Reads, scans, parses, compiles and executes the given <var>scriptFile</var>.
+     * <p>
+     *   Iff <var>parameterNames</var>{@code .length == 0 &&} <var>parameterTypes</var>{@code .length == 0}, then the
+     *   <var>args</var> are passed as a single parameter "{@code String[] args}". Otherwise,
+     *   <var>parameterNames</var>{@code .length}, <var>parameterTypes</var>{@code .length} and <var>args</var>{@code
+     *   .length} must be equal, and each of the <var>arguments</var> is converted to the respective parameter type.
+     * </var>
+     *
+     * @see DemoBase#createObject(Class, String)
+     */
     private static void
     executeScriptFile(
         @Nullable String compilerFactoryId,
         File             scriptFile,
         @Nullable String optionalEncoding,
-        List<String>     defaultImports,
+        String[]         defaultImports,
         Class<?>         returnType,
-        List<String>     parameterNames,
-        List<Class<?>>   parameterTypes,
-        List<Class<?>>   thrownExceptions,
+        String[]         parameterNames,
+        Class<?>[]       parameterTypes,
+        Class<?>[]       thrownExceptions,
         String[]         args
     ) throws Exception {
 
@@ -183,29 +194,29 @@ class Main extends DemoBase {
             compilerFactory = CompilerFactoryFactory.getDefaultCompilerFactory();
         }
 
+        // Create and configure the "ScriptEvaluator" object.
         IScriptEvaluator se = compilerFactory.newScriptEvaluator();
 
         se.setReturnType(returnType);
-        se.setDefaultImports(defaultImports.toArray(new String[defaultImports.size()]));
-        se.setThrownExceptions(thrownExceptions.toArray(new Class[thrownExceptions.size()]));
+        se.setDefaultImports(defaultImports);
+        se.setThrownExceptions(thrownExceptions);
 
+        // Compute the method parameters and the invocation arguments.
         Object[] arguments;
-        if (parameterTypes.isEmpty()) {
+        if (parameterNames.length == 0 && parameterTypes.length == 0) {
 
-            parameterTypes.add(String[].class);
-            parameterNames.add("args");
-            arguments = args;
-
-            if (thrownExceptions.isEmpty()) thrownExceptions.add(Exception.class);
+            parameterNames = new String[] { "args" };
+            parameterTypes = new Class<?>[] { String[].class };
+            arguments      = args;
         } else {
 
             // One command line argument for each parameter.
-            if (args.length != parameterTypes.size()) {
+            if (args.length != parameterTypes.length) {
                 System.err.println(
                     "Argument count ("
                     + args.length
                     + ") and parameter count ("
-                    + parameterTypes.size()
+                    + parameterTypes.length
                     + ") do not match; try \"--help\"."
                 );
                 System.exit(1);
@@ -213,17 +224,11 @@ class Main extends DemoBase {
 
             // Convert command line arguments to call arguments.
             arguments = new Object[args.length];
-            for (int j = 0; j < args.length; ++j) {
-                arguments[j] = DemoBase.createObject(parameterTypes.get(j), args[j]);
+            for (int i = 0; i < args.length; ++i) {
+                arguments[i] = DemoBase.createObject(parameterTypes[i], args[i]);
             }
         }
-
-        // Create and configure the "ScriptEvaluator" object.
-        se.setParameters(
-            parameterNames.toArray(new String[0]),
-            parameterTypes.toArray(new Class[parameterTypes.size()])
-        );
-        se.setThrownExceptions(thrownExceptions.toArray(new Class[0]));
+        se.setParameters(parameterNames, parameterTypes);
 
         // Scan, parse and compile the script file.
         InputStream is = new FileInputStream(scriptFile);
@@ -235,7 +240,7 @@ class Main extends DemoBase {
             try { is.close(); } catch (Exception e) {}
         }
 
-        // Evaluate script with actual parameter values.
+        // Evaluate the script with the actual parameter values.
         Object res = se.evaluate(arguments);
 
         // Print script return value.
