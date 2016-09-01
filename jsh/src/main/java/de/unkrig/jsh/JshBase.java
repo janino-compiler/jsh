@@ -86,6 +86,18 @@ class JshBase {
     public static File
     getcwd() { return new File(System.getProperty("user.dir")); }
 
+    /**
+     * Shorthand for "{@code new File(}<var>pathname</var>{@code )}".
+     */
+    public static File
+    file(String pathname) { return new File(pathname); }
+
+    /**
+     * Shorthand for {@link Command#from(File)}.
+     */
+    public static Command
+    from(File inputFile) { return Command.from(inputFile); }
+
     @Nullable public static Collection<? extends File>
     glob(@Nullable String... globs) { return globs == null ? null : Brief.glob(null, globs); }
 
@@ -104,7 +116,8 @@ class JshBase {
     /**
      * Shorthand for {@link Command#pipe(String...)}.
      */
-    public static Command pipe(String... command) { return Command.pipe(command); }
+    public static Command
+    pipe(String... command) { return Command.pipe(command); }
 
     /**
      * @return A modifiable, empty {@link Set}; shorthand for "{@code new HashSet()}"
