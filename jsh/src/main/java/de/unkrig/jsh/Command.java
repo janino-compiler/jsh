@@ -54,18 +54,21 @@ class Command {
 
     /**
      * Executes the <var>command</var>, without redirecting its input, output and error.
+     *
+     * @return The exit value of the <var>command</var>
      */
-    public static void
+    public static int
     run(String... command) throws InterruptedException, IOException {
-        Command.run(Redirect.INHERIT, command);
+        return Command.run(Redirect.INHERIT, command);
     }
 
     /**
      * Executes the <var>command</var>, without redirecting its input or output.
      *
      * @param redirectError Where to redirect the error output
+     * @return              The exit value of the <var>command</var>
      */
-    public static void
+    public static int
     run(Redirect redirectError, String... command) throws InterruptedException, IOException {
 
         ProcessBuilder pb = new ProcessBuilder(command);
@@ -73,7 +76,7 @@ class Command {
         pb.redirectOutput(Redirect.INHERIT);
         pb.redirectError(redirectError);
 
-        pb.start().waitFor();
+        return pb.start().waitFor();
     }
 
     /**
@@ -85,7 +88,7 @@ class Command {
     from(final File inputFile) {
 
         return new Command() {
-            @Override protected InputStream run() throws IOException { return new FileInputStream(inputFile); }
+            @Override protected InputStream start() throws IOException { return new FileInputStream(inputFile); }
         };
     }
 
@@ -97,71 +100,87 @@ class Command {
      */
     public static Command
     pipe(final String... command) {
-        return Command.pipe(Redirect.INHERIT, command);
-    }
-
-    /**
-     * Creates and returns a {@link Command} object which will execute the given <var>command</var> and catch its
-     * output.
-     *
-     * @param redirectError Where to redirect the error output
-     * @see Command
-     */
-    public static Command
-    pipe(final Redirect redirectError, final String... command) {
 
         return new Command() {
 
+            private Redirect redirectError = Redirect.INHERIT;
+
+            @SuppressWarnings("unused") public Command
+            redirectError(Redirect redirectError) {
+                this.redirectError = redirectError;
+                return this;
+            }
+
             @Override protected InputStream
-            run() throws IOException {
+            start() throws IOException {
                 ProcessBuilder pb = new ProcessBuilder(command);
-                pb.redirectError(redirectError);
+                pb.redirectError(this.redirectError);
                 return Command.outputOf(pb.start());
             }
         };
     }
 
     /**
-     * Executes <em>this</em> {@link Command}, catches its output and feeds it into the <var>command</var>.
+     * Prints the output to {@code System.out}.
      *
      * @see Command
      */
     public void
+    print() throws IOException {
+        IoUtil.copy(
+            this.start(), // inputStream
+            true,         // closeInputStream
+            System.out,   // outputStream
+            false         // closeOutputStream
+        );
+    }
+
+    /**
+     * Executes <em>this</em> {@link Command}, catches its output and feeds it into the <var>command</var>.
+     *
+     * @return      The exit value of the <var>command</var>
+     * @see Command
+     */
+    public int
     to(String... command) throws InterruptedException, IOException {
-        this.to(Redirect.INHERIT, command);
+        return this.to(Redirect.INHERIT, command);
     }
 
     /**
      * Executes <em>this</em> {@link Command}, catches its output and feeds it into the <var>command</var>.
      *
      * @param redirectError Where to redirect the error output
+     * @return              The exit value of the <var>command</var>
      * @see Command
      */
-    public void
+    public int
     to(Redirect redirectError, String... command) throws InterruptedException, IOException {
 
-        InputStream fromProcess1 = this.run();
+        InputStream fromProcess1 = this.start();
 
-        OutputStream toProcess2;
+        Process process2;
         {
             ProcessBuilder pb2 = new ProcessBuilder(command);
             pb2.redirectOutput(Redirect.INHERIT);
             pb2.redirectError(redirectError);
-            toProcess2 = Command.inputOf(pb2.start());
+
+            process2 = pb2.start();
         }
 
         try {
             IoUtil.copy(
-                fromProcess1, // inputStream
-                true,         // closeInputStream
-                toProcess2,   // outputStream
-                true          // closeOutputStream
+                fromProcess1,               // inputStream
+                true,                       // closeInputStream
+                process2.getOutputStream(), // outputStream
+                true                        // closeOutputStream
             );
         } catch (IOException ioe) {
 
             // Ignore "broken pipe" error condition.
             ;
         }
+
+        return process2.waitFor();
     }
 
     /**
@@ -175,10 +194,10 @@ class Command {
         FileOutputStream os = new FileOutputStream(outputFile);
 
         IoUtil.copy(
-            this.run(), // inputStream
-            true,       // closeInputStream
-            os,         // outputStream
-            true        // closeOutputStream
+            this.start(), // inputStream
+            true,         // closeInputStream
+            os,           // outputStream
+            true          // closeOutputStream
         );
     }
 
@@ -190,31 +209,26 @@ class Command {
      */
     public Command
     through(final String... command) throws InterruptedException, IOException {
-        return this.through(Redirect.INHERIT, command);
-    }
-
-    /**
-     * Creates and returns a {@link Command} object which will execute <em>this</em> {@link Command}, catch its
-     * output, feed it through the given <var>command</var> and catch its output.
-     *
-     * @param redirectError Where to redirect the error output
-     * @see Command
-     */
-    public Command
-    through(final Redirect redirectError, final String... command)
-    throws InterruptedException, IOException {
 
         return new Command() {
 
+            private Redirect redirectError = Redirect.INHERIT;
+
+            @SuppressWarnings("unused") public Command
+            redirectError(Redirect redirectError) {
+                this.redirectError = redirectError;
+                return this;
+            }
+
             @Override protected InputStream
-            run() throws IOException {
-                final InputStream fromProcess1 = Command.this.run();
+            start() throws IOException {
+                final InputStream fromProcess1 = Command.this.start();
 
                 final OutputStream toProcess2;
                 InputStream        fromProcess2;
                 {
                     ProcessBuilder pb2 = new ProcessBuilder(command);
-                    pb2.redirectError(redirectError);
+                    pb2.redirectError(this.redirectError);
 
                     Process process2 = pb2.start();
 
@@ -266,24 +280,6 @@ class Command {
         };
     }
 
-    private static InputStream
-    errorOf(final Process process) {
-        return new FilterInputStream(process.getErrorStream()) {
-
-            @Override public void
-            close() throws IOException {
-
-                super.close();
-
-                try {
-                    process.waitFor();
-                } catch (InterruptedException ie) {
-                    throw new IOException(ie);
-                }
-            }
-        };
-    }
-
     private static OutputStream
     inputOf(final Process process) {
         return new FilterOutputStream(process.getOutputStream()) {
@@ -303,9 +299,8 @@ class Command {
     }
 
     /**
-     * Creates and returns a {@link Process} that executes this command. The output of that process is <em>not</em>
-     * redirected, so the caller can catch it through {@link Process#getInputStream()}.
+     * @return The byte stream produced by this {@link Command}
      */
     protected abstract InputStream
-    run() throws IOException;
+    start() throws IOException;
 }

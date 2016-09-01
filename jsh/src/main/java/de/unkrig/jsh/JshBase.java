@@ -76,7 +76,7 @@ class JshBase {
 
     public static void pwd() { Pwd.$(); }
 
-    public static void run(String... command) throws InterruptedException, IOException { Command.run(command); }
+    public static int  run(String... command) throws IOException, InterruptedException { return Command.run(command); }
 
     // Utility methods.
 
