@@ -39,6 +39,8 @@ import org.codehaus.commons.compiler.IScriptEvaluator;
 import org.codehaus.commons.compiler.samples.DemoBase;
 import org.codehaus.commons.nullanalysis.Nullable;
 
+import de.unkrig.jsh.InteractiveShell.Base;
+
 /**
  * A test program that allows you to play around with the
  * {@link org.codehaus.janino.ScriptEvaluator ScriptEvaluator} class.
@@ -197,17 +199,18 @@ class Main extends DemoBase {
         // Create and configure the "ScriptEvaluator" object.
         IScriptEvaluator se = compilerFactory.newScriptEvaluator();
 
-        se.setReturnType(returnType);
         se.setDefaultImports(defaultImports);
+        se.setExtendedClass(Base.class);
+        se.setReturnType(returnType);
         se.setThrownExceptions(thrownExceptions);
 
         // Compute the method parameters and the invocation arguments.
         Object[] arguments;
         if (parameterNames.length == 0 && parameterTypes.length == 0) {
 
-            parameterNames = new String[] { "args" };
+            parameterNames = new String[]   { "args" };
             parameterTypes = new Class<?>[] { String[].class };
-            arguments      = args;
+            arguments      = new Object[]   { args };
         } else {
 
             // One command line argument for each parameter.
