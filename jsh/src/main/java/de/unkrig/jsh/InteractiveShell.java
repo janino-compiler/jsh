@@ -33,14 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.codehaus.commons.compiler.CompileException;
 import org.codehaus.commons.compiler.IScriptEvaluator;
@@ -61,10 +54,6 @@ import org.codehaus.janino.Visitor.ImportVisitor;
 import de.unkrig.commons.lang.StringUtil;
 import de.unkrig.commons.lang.protocol.ProducerWhichThrows;
 import de.unkrig.commons.util.ArrayUtil;
-import de.unkrig.jsh.command.Cd;
-import de.unkrig.jsh.command.Echo;
-import de.unkrig.jsh.command.Ls;
-import de.unkrig.jsh.command.Pwd;
 import jline.console.ConsoleReader;
 import jline.console.history.FileHistory;
 
@@ -125,7 +114,7 @@ class InteractiveShell extends DemoBase {
             IScriptEvaluator se = new ScriptEvaluator();
 
             se.setDefaultImports(defaultImports);
-            se.setExtendedClass(Base.class);
+            se.setExtendedClass(JshBase.class);
             se.setThrownExceptions(thrownExceptions);
 
             // Scan, parse and compile the script file.
@@ -182,7 +171,7 @@ class InteractiveShell extends DemoBase {
 
         StatementEvaluator se = new StatementEvaluator();
         se.setDefaultImports(defaultImports);
-        se.setExtendedClass(Base.class);
+        se.setExtendedClass(JshBase.class);
         se.setThrownExceptions(thrownExceptions);
 
         System.err.println("Welcome, stranger, and speak!");
@@ -210,7 +199,7 @@ class InteractiveShell extends DemoBase {
                         Class<?> tec = InteractiveShell.class.getClassLoader().loadClass(
                             StringUtil.join(Arrays.asList(te.identifiers), ".")
                         );
-                        thrownExceptions = ArrayUtil.append(thrownExceptions, tec);
+                        thrownExceptions = ArrayUtil.append(thrownExceptions, new Class<?>[] { tec });
                     }
 
                     se.setThrownExceptions(thrownExceptions);
@@ -312,70 +301,6 @@ class InteractiveShell extends DemoBase {
     }
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-
-    /**
-     * The base class for the classes generated from the entered commands; has a set of "command fields" (like {@code
-     * ls}, "shorthand commands" (like {@code exit()}) and "utility methods" (like {@link #glob(String...)}.
-     */
-    public abstract static
-    class Base {
-
-        // "Command fields".
-
-        // SUPPRESS CHECKSTYLE ConstantName|JavadocVariable:4
-        public static final Cd   cd   = new Cd();
-        public static final Echo echo = new Echo();
-        public static final Ls   ls   = new Ls();
-        public static final Pwd  pwd  = new Pwd();
-
-        // Shorthand commands.
-
-        public static void cd()               { Base.cd.$(); }
-        public static void cd(File dir)       { Base.cd.$(dir); }
-        public static void cd(String dirName) { Base.cd.$(dirName); }
-
-        public static void echo(Object... args) { Base.echo.$(args); }
-
-        public static void err(@Nullable Object subject) { Brief.print(subject, System.err); }
-
-        public static void exit()           { System.exit(0); }
-        public static void exit(int status) { System.exit(status); }
-
-        public static void ls(File... files) { Base.ls.$(files); }
-
-        public static void out(@Nullable Object subject) { Brief.print(subject, System.out); }
-
-        public static void pwd() { Pwd.$(); }
-
-        // Utility methods.
-
-        /**
-         * @return The current working directory
-         */
-        public static File
-        getcwd() { return new File(System.getProperty("user.dir")); }
-
-        @Nullable public static Collection<? extends File>
-        glob(@Nullable String... globs) { return globs == null ? null : Brief.glob(null, globs); }
-
-        /**
-         * @return A modifiable, empty {@link List}; shorthand for "{@code new ArrayList()}"
-         */
-        @SuppressWarnings("rawtypes") public static List
-        list() { return new ArrayList(); }
-
-        /**
-         * @return A modifiable, empty {@link Map}; shorthand for "{@code new HashMap()}"
-         */
-        @SuppressWarnings("rawtypes") public static Map
-        map() { return new HashMap(); }
-
-        /**
-         * @return A modifiable, empty {@link Set}; shorthand for "{@code new HashSet()}"
-         */
-        @SuppressWarnings("rawtypes") public static Set
-        set() { return new HashSet(); }
-    }
 
     /**
      * Converts all <var>elements</var> to string and concatenates these, separated by the <var>glue</var>.

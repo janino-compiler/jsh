@@ -39,8 +39,6 @@ import org.codehaus.commons.compiler.IScriptEvaluator;
 import org.codehaus.commons.compiler.samples.DemoBase;
 import org.codehaus.commons.nullanalysis.Nullable;
 
-import de.unkrig.jsh.InteractiveShell.Base;
-
 /**
  * A test program that allows you to play around with the
  * {@link org.codehaus.janino.ScriptEvaluator ScriptEvaluator} class.
@@ -200,7 +198,7 @@ class Main extends DemoBase {
         IScriptEvaluator se = compilerFactory.newScriptEvaluator();
 
         se.setDefaultImports(defaultImports);
-        se.setExtendedClass(Base.class);
+        se.setExtendedClass(JshBase.class);
         se.setReturnType(returnType);
         se.setThrownExceptions(thrownExceptions);
 
