@@ -139,6 +139,11 @@ class InteractiveShell extends DemoBase {
         // Set up a "jline" console reader (command history etc.).
         final ConsoleReader cr = new ConsoleReader();
 
+        // We don't want "event expansion", because its meta character "!" confusingly collides with the Java "!"
+        // operator.
+        // ("Event expansion" means, e.g., that "!!" is replace with the PREVIOUSLY entered line.)
+        cr.setExpandEvents(false);
+
         // Configure a file-based command history.
         {
             final FileHistory fileHistory = new FileHistory(InteractiveShell.JSH_HISTORY_FILE);
