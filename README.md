@@ -6,6 +6,7 @@ JSH is yet another shell program that stands out from these wrt the following as
 * The command syntax is Java. (Not *similar* to Java, but *really* Java.)
 * The commands (ls, echo, ...) are not shell-external programs, but classes in the running JVM.
 * The code entered is compiled into Java bytecode, which is loaded into the running JVM, which makes execution tremendously fast.
+* 100% Java - runs on any platform for which a JRE >= 1.7 is available.
 
 These properties open up a whole range of new use cases which you would normally *not* implement with a shell script:
 * Processing of massive a amounts of data (traditionally, one would use processing tools like PERL or AWK for that).
