@@ -65,7 +65,7 @@ class Command {
     /**
      * Executes the <var>command</var>, without redirecting its input or output.
      *
-     * @param redirectError Where to redirect the error output
+     * @param redirectError Where to redirect the error output of the <var>command</var>
      * @return              The exit value of the <var>command</var>
      */
     public static int
@@ -149,7 +149,7 @@ class Command {
     /**
      * Executes <em>this</em> {@link Command}, catches its output and feeds it into the <var>command</var>.
      *
-     * @param redirectError Where to redirect the error output
+     * @param redirectError Where to redirect the error output of the <var>command</var>
      * @return              The exit value of the <var>command</var>
      * @see Command
      */
