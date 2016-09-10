@@ -28,8 +28,11 @@ package de.unkrig.jsh;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,18 +53,18 @@ import de.unkrig.jsh.command.Pwd;
 public abstract
 class JshBase {
 
-    // "Command fields".
+    // ======================================= COMMAND FIELDS =======================================
 
     public static final Cd   cd   = new Cd(); // SUPPRESS CHECKSTYLE ConstantName|JavadocVariable:4
     public static final Echo echo = new Echo();
     public static final Ls   ls   = new Ls();
     public static final Pwd  pwd  = new Pwd();
 
-    // Shorthand commands.
+    // ======================================= SHORTHAND COMMANDS =======================================
 
     public static void cd()               { JshBase.cd.$(); }
     public static void cd(File dir)       { JshBase.cd.$(dir); }
-    public static void cd(String dirName) { JshBase.cd.$(dirName); }
+    public static void cd(String dirName) { JshBase.cd.$(new File(dirName)); }
 
     public static void echo(Object... args) { JshBase.echo.$(args); }
 
@@ -78,13 +81,33 @@ class JshBase {
 
     public static int  run(String... command) throws IOException, InterruptedException { return Command.run(command); }
 
-    // Utility methods.
+    // ======================================= UTILITY METHODS =======================================
 
     /**
-     * @return The current working directory
+     * Shorthand for {@link DateFormat#getDateInstance()}, which renders {@link Date} objects like
+     * "Jul 6, 2016" (english locale) or "06.07.2016" (german locale).
      */
-    public static File
-    getcwd() { return new File(System.getProperty("user.dir")); }
+    public static DateFormat
+    dateFormat() { return DateFormat.getDateInstance(); }
+
+    /**
+     * Shorthand for {@link DateFormat#getDateInstance(int)}.
+     */
+    public static DateFormat
+    dateFormat(int dateStyle) { return DateFormat.getDateInstance(dateStyle); }
+
+    /**
+     * Shorthand for {@link DateFormat#getDateTimeInstance()}, which renders {@link Date} objects like
+     * "Jul 6, 2016 6:23:17 PM" (english locale) or "06.07.2016 18:23:17" (german locale).
+     */
+    public static DateFormat
+    dateTimeFormat() { return DateFormat.getDateTimeInstance(); }
+
+    /**
+     * Shorthand for {@link DateFormat#getDateTimeInstance(int)}.
+     */
+    public static DateFormat
+    dateTimeFormat(int dateStyle, int timeStyle) { return DateFormat.getDateTimeInstance(dateStyle, timeStyle); }
 
     /**
      * Shorthand for "{@code new File(}<var>pathname</var>{@code )}".
@@ -97,6 +120,12 @@ class JshBase {
      */
     public static Command
     from(File inputFile) { return Command.from(inputFile); }
+
+    /**
+     * @return The current working directory
+     */
+    public static File
+    getcwd() { return new File(System.getProperty("user.dir")); }
 
     @Nullable public static Collection<? extends File>
     glob(@Nullable String... globs) { return globs == null ? null : Brief.glob(null, globs); }
@@ -124,4 +153,40 @@ class JshBase {
      */
     @SuppressWarnings("rawtypes") public static Set
     set() { return new HashSet(); }
+
+    /**
+     * Shorthand for {@link DateFormat#getTimeInstance()}, which renders {@link Date} objects like
+     * "6:23:17 PM" (english locale) or "18:23:17" (german locale).
+     */
+    public static DateFormat
+    timeFormat() { return DateFormat.getTimeInstance(); }
+
+    /**
+     * Shorthand for {@link DateFormat#getTimeInstance(int)}.
+     */
+    public static DateFormat
+    timeFormat(int timeStyle) { return DateFormat.getTimeInstance(timeStyle); }
+
+    // ======================================= ALIAS CONSTANTS =======================================
+
+    /** Alias for "{@code new} {@link SimpleDateFormat}{@code ("yyyy-MM-dd")}". */
+    public static final DateFormat ISO_DATE_FORMAT           = new SimpleDateFormat("yyyy-MM-dd");
+
+    /** Alias for "{@code new} {@link SimpleDateFormat}{@code ("yyyy-MM-dd'T'HH:mm:ss")}". */
+    public static final DateFormat ISO_DATE_TIME_FORMAT      = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+    /** Alias for "{@code new} {@link SimpleDateFormat}{@code ("yyyy-MM-dd'T'HH:mm:ss.SSS")}". */
+    public static final DateFormat LONG_ISO_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+    /** Alias for "{@code new} {@link SimpleDateFormat}{@code ("yyyy-MM-dd'T'HH:mm:ss.SSSZ")}". */
+    public static final DateFormat FULL_ISO_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+    /** Alias for "{@code new} {@link SimpleDateFormat}{@code ("HH:mm:ss")}". */
+    public static final DateFormat ISO_TIME_FORMAT           = new SimpleDateFormat("HH:mm:ss");
+
+    /** Alias for "{@code new} {@link SimpleDateFormat}{@code ("HH:mm:ss.SSS")}". */
+    public static final DateFormat LONG_ISO_TIME_FORMAT      = new SimpleDateFormat("HH:mm:ss.SSS");
+
+    /** Alias for "{@code new} {@link SimpleDateFormat}{@code ("HH:mm:ss.SSSZ")}". */
+    public static final DateFormat FULL_ISO_TIME_FORMAT      = new SimpleDateFormat("HH:mm:ss.SSSZ");
 }

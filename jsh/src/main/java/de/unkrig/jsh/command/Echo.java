@@ -28,6 +28,8 @@ package de.unkrig.jsh.command;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.codehaus.commons.nullanalysis.Nullable;
 
@@ -68,6 +70,15 @@ class Echo extends Cloneable2<Echo> {
      */
     public void
     $(@Nullable Object... args) { // SUPPRESS CHECKSTYLE MethodName
+        this.$(args == null ? null : Arrays.asList(args));
+    }
+
+    /**
+     * Prints the <var>args</var>, separated with spaces. {@code null} <var>args</var> are silently ignored.
+     * Eventually prints a line break, unless the {@link #n()} option is configured.
+     */
+    public void
+    $(@Nullable Collection<?> args) { // SUPPRESS CHECKSTYLE MethodName
 
         if (args != null) {
 

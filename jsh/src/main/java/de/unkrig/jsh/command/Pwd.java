@@ -29,14 +29,13 @@ package de.unkrig.jsh.command;
 import de.unkrig.jsh.Brief;
 
 /**
- * Changes the current working directory.
+ * Prints the current working directory to {@link System#out}.
  */
 public final // SUPPRESS CHECKSTYLE HideUtilityClassConstructor
 class Pwd {
 
     /**
-     * Prints the a listing of the <var>files</var> to {@code System.out}, or, iff <var>files</var> {@code == null},
-     * of the current working directory.
+     * Prints the current working directory to {@link System#out}.
      */
     public static void
     $() { Brief.print(System.getProperty("user.dir"), System.out); } // SUPPRESS CHECKSTYLE MethodName

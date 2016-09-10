@@ -38,13 +38,7 @@ class Cd {
      * Changes the current working directory to the user's home directory.
      */
     public void
-    $() { this.$(System.getProperty("user.home")); } // SUPPRESS CHECKSTYLE MethodName
-
-    /**
-     * Sets a new current working directory.
-     */
-    public void
-    $(String dirName) { this.$(new File(dirName)); } // SUPPRESS CHECKSTYLE MethodName
+    $() { this.$(new File(System.getProperty("user.home"))); } // SUPPRESS CHECKSTYLE MethodName
 
     /**
      * Sets a new current working directory.

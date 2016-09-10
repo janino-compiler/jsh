@@ -47,7 +47,7 @@ import org.codehaus.janino.Java.CompilationUnit.TypeImportOnDemandDeclaration;
 import org.codehaus.janino.Java.ReferenceType;
 import org.codehaus.janino.Parser;
 import org.codehaus.janino.Scanner;
-import org.codehaus.janino.Scanner.TokenType;
+import org.codehaus.janino.TokenType;
 import org.codehaus.janino.ScriptEvaluator;
 import org.codehaus.janino.Visitor.ImportVisitor;
 
