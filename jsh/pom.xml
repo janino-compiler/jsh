@@ -10,6 +10,21 @@
   <name>jsh</name>
   <url>https://github.com/janino-compiler/jsh</url>
 
+  <repositories>
+
+    <!-- JANINO releases appear quicker here than on repo.maven.org. -->
+    <repository>
+        <id>oss.sonatype.org</id>
+        <url>https://oss.sonatype.org/content/groups/public</url>
+        <releases>
+           <enabled>true</enabled>
+        </releases>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>
+     </repository>
+  </repositories>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -28,15 +43,8 @@
   	<dependency>
   		<groupId>org.codehaus.janino</groupId>
   		<artifactId>janino</artifactId>
-  		<version>3.0.1-SNAPSHOT</version>
+  		<version>3.0.5-SNAPSHOT</version>
   	</dependency>
-<!--
-  	<dependency>
-  		<groupId>org.codehaus.janino</groupId>
-  		<artifactId>commons-compiler</artifactId>
-  		<version>3.0.1-SNAPSHOT</version>
-  	</dependency>
--->
   </dependencies>
 
   <build>
