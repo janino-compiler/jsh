@@ -16,13 +16,15 @@ These properties open up a whole range of new use cases which you would normally
 
 ## Usage
 
-JSH is available on MAVEN CENTRAL. Just get the POM, then run
+Get the runnable jar file from
 
-```sh
-mvn exec:java -Dexec.mainClass=de.unkrig.jsh.Main
-```
+[https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-jar-with-dependencies.jar]
 
-As it is worth a thousand words, here's an example:
+(replace "0.1.1" with the most recent version), and run it:
+
+`$ java -jar path/to/jsh-0.1.1-jar-with-dependencies.jar`
+
+Now start typing Java code and see how it executes. Here's an example:
 
 ```java
 Welcome, stranger, and speak!
@@ -40,15 +42,21 @@ $ for (String s : new String[] { "a", "b", "c" }) {
 a
 b
 c
-$
-$ ls();
+$ ls(); // Shorthand for "ls.$()".
 .bashrc
 .bash_history
 .bash_profile
 .jshrc
+$ ls.l().$(); // "l()" activates "long" listing, resembling "ls -l".
+-rwx paula\Arno        6437 20.09.2016 13:42:27 .bashrc
+-rwx paula\Arno       50409 20.09.2016 13:42:28 .bash_history
+-rwx paula\Arno        1494 22.01.2013 22:05:48 .bash_profile
+-rwx paula\Arno          56 16.08.2015 20:32:00 .jshrc
 $
 exit();
 ```
+
+For documentation of the available commands (like `ls();`), see [the JAVADOC of the "JshBase" class](jar:https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-javadoc.jar!/de/unkrig/jsh/JshBase.html).
 
 ## Licensing
 
