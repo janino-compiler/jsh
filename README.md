@@ -1,5 +1,7 @@
 # jsh - The "Java Shell"
 
+## Introduction
+
 On popular operating systems (UNIX, MS WINDOWS, MAC OS, ...) exists a plethora of "shells", i.e. programs that read a sequence of "commands" (either from a "script file" or from the console) and execute them: Bourne Shell, BASH, C Shell, Korn Shell, only to mention a few.
 
 JSH is yet another shell program that stands out from these wrt the following aspects:
@@ -11,6 +13,14 @@ JSH is yet another shell program that stands out from these wrt the following as
 These properties open up a whole range of new use cases which you would normally *not* implement with a shell script:
 * Processing of massive a amounts of data (traditionally, one would use processing tools like PERL or AWK for that).
 * Number crunching (traditionally, one would use specialized environments for that, like MATLAB).
+
+## Usage
+
+JSH is available on MAVEN CENTRAL. Just get the POM, then run
+
+```sh
+mvn exec:java -Dexec.mainClass=de.unkrig.jsh.Main
+```
 
 As it is worth a thousand words, here's an example:
 
@@ -39,4 +49,7 @@ $ ls();
 $
 exit();
 ```
+
+## Contributing
+
 If you find the concept useful, feel free to use JSH, give feedback, and contribute! The best way to contact me is via a GITHUB issue.
