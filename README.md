@@ -18,7 +18,7 @@ These properties open up a whole range of new use cases which you would normally
 
 Get the runnable jar file from
 
-[https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-jar-with-dependencies.jar]
+> https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-jar-with-dependencies.jar
 
 (replace "0.1.1" with the most recent version), and run it:
 
@@ -56,7 +56,11 @@ $
 exit();
 ```
 
-For documentation of the available commands (like `ls();`), see [the JAVADOC of the JshBase class][1].
+For documentation of the available commands (like `ls();`), download the JAVADOC
+
+> https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-javadoc.jar
+
+(again, replace "0.1.1" with the latest version number), and check the documentation of the "JshBase" class.
 
 ## Licensing
 
@@ -66,4 +70,5 @@ JSH is available under [the new BSD license](https://raw.githubusercontent.com/j
 
 If you find the concept useful, feel free to use JSH, give feedback, and contribute! The best way to contact me is via a GITHUB issue.
 
-[1]: jar:https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-javadoc.jar!/de/unkrig/jsh/JshBase.html
+[1]: https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-javadoc.jar!/de/unkrig/jsh/JshBase.html
+[2]: jar:https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-javadoc.jar!/de/unkrig/jsh/JshBase.html
