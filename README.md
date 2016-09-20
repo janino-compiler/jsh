@@ -56,7 +56,7 @@ $
 exit();
 ```
 
-For documentation of the available commands (like `ls();`), see [the JAVADOC of the "JshBase" class](jar:https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-javadoc.jar!/de/unkrig/jsh/JshBase.html).
+For documentation of the available commands (like `ls();`), see [the JAVADOC of the JshBase class][1].
 
 ## Licensing
 
@@ -65,3 +65,5 @@ JSH is available under [the new BSD license](https://raw.githubusercontent.com/j
 ## Contributing
 
 If you find the concept useful, feel free to use JSH, give feedback, and contribute! The best way to contact me is via a GITHUB issue.
+
+[1]: jar:https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-javadoc.jar!/de/unkrig/jsh/JshBase.html
