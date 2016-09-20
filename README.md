@@ -50,6 +50,10 @@ $
 exit();
 ```
 
+## Licensing
+
+JSH is available under [the new BSD license](https://raw.githubusercontent.com/janino-compiler/jsh/master/jsh/LICENSE).
+
 ## Contributing
 
 If you find the concept useful, feel free to use JSH, give feedback, and contribute! The best way to contact me is via a GITHUB issue.
