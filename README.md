@@ -16,28 +16,24 @@ These properties open up a whole range of new use cases which you would normally
 
 ## Usage
 
-Get the runnable jar file from
+Get the latest version of the runnable JAR file from [here](https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=de.unkrig&a=jsh&v=LATEST&c=jar-with-dependencies), and run it:
 
-> https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-jar-with-dependencies.jar
+> `$ java -jar` _jar-file_
 
-(replace "0.1.1" with the most recent version), and run it:
-
-`$ java -jar path/to/jsh-0.1.1-jar-with-dependencies.jar`
-
-Now start typing Java code and see how it executes. Here's an example:
+Now start typing Java code and see how it executes. Here's an example session:
 
 ```java
 Welcome, stranger, and speak!
 $ System.out.println("HELLO WORLD");
 HELLO WORLD
 $ for (int i = 0; i < 3; i++) {
->     System.out.println("HELLO WORLD");
+>     out("HELLO WORLD"); // Short for "System.out.println()".
 > }
 HELLO WORLD
 HELLO WORLD
 HELLO WORLD
 $ for (String s : new String[] { "a", "b", "c" }) {
->     System.out.println(s);
+>     out(s);
 > }
 a
 b
@@ -58,9 +54,9 @@ exit();
 
 For documentation of the available commands (like `ls();`), download the JAVADOC
 
-> https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/0.1.1/jsh-0.1.1-javadoc.jar
+> https://oss.sonatype.org/content/groups/public/de/unkrig/jsh/_latest-version_/jsh-_latest-version_-javadoc.jar
 
-(again, replace "0.1.1" with the latest version number), and check the documentation of the "JshBase" class.
+, and check the documentation of the "JshBase" class.
 
 ## Licensing
 
