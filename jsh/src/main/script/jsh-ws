@@ -1,0 +1,36 @@
+#!/bin/bash
+
+java="$JAVA_HOME/jre/bin/java";
+
+prj="`dirname $0`/../../..";
+ws="$prj/..";
+
+mavenrepo="C:/Server/mavenrepo";
+
+ws=`cygpath -w "$ws"`;
+
+janino_version="3.0.6";
+commons_version="1.1.11";
+
+cp="\
+$ws/jsh/target/classes\;\
+\
+$ws/janino/target/classes\;\
+$mavenrepo/org/codehaus/janino/janino/$janino_version/janino-$janino_version.jar\;\
+\
+$ws/commons-compiler/target/classes\;\
+$mavenrepo/org/codehaus/janino/commons-compiler/$janino_version/commons-compiler-$janino_version.jar\;\
+\
+$mavenrepo/jline/jline/2.14/jline-2.14.jar\;\
+$mavenrepo/de/unkrig/de-unkrig-commons/$commons_version/de-unkrig-commons-$commons_version.jar\
+";
+
+JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,suspend=y,server=y,address=55555";
+
+"$java" \
+	"$JAVA_OPTS" \
+	-Dfile.encoding=UTF-8 \
+	-classpath "$cp" \
+	de.unkrig.jsh.Main \
+	"$@" \
+	;
