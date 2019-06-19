@@ -36,14 +36,14 @@
   		<version>2.14</version>
   	</dependency>
   	<dependency>
-  		<groupId>de.unkrig</groupId>
-  		<artifactId>de-unkrig-commons</artifactId>
-  		<version>1.1.11</version>
-  	</dependency>
-  	<dependency>
   		<groupId>org.codehaus.janino</groupId>
   		<artifactId>janino</artifactId>
-  		<version>3.0.8</version>
+  		<version>3.0.13-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.unkrig.commons</groupId>
+  		<artifactId>commons-util</artifactId>
+  		<version>1.2.13</version>
   	</dependency>
   </dependencies>
 

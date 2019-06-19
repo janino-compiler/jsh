@@ -2,8 +2,8 @@
 /*
  * jsh - The Java Shell
  *
- * Copyright (c) 2016 Arno Unkrig. All rights reserved.
- * Copyright (c) 2015-2016 TIBCO Software Inc. All rights reserved.
+ * Copyright (c) 2016, Arno Unkrig
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met:
@@ -35,7 +35,7 @@ import org.codehaus.commons.compiler.Location;
 import org.codehaus.commons.nullanalysis.Nullable;
 import org.codehaus.janino.ClassBodyEvaluator;
 import org.codehaus.janino.Java;
-import org.codehaus.janino.Mod;
+import org.codehaus.janino.Java.Modifier;
 import org.codehaus.janino.Parser;
 import org.codehaus.janino.Scanner;
 import org.codehaus.janino.ScriptEvaluator;
@@ -129,15 +129,16 @@ class StatementEvaluator extends ClassBodyEvaluator {
         return new Java.MethodDeclarator(
             location,                                              // location
             null,                                                  // optionalDocComment
-            new Java.Modifiers(                                    // modifiers
-                (short) (Mod.PUBLIC | Mod.STATIC),
-                new Java.Annotation[0]
-            ),
+            new Modifier[] {                                       // modifiers
+                new Java.AccessModifier("public", location),
+                new Java.AccessModifier("static", location),
+            },
             null,                                                  // optionalTypeParameters
             new Java.PrimitiveType(location, Java.Primitive.VOID), // type
             StatementEvaluator.METHOD_NAME,                        // name
             fps,                                                   // formalParameters
             thrownExceptions,                                      // thrownExceptions
+            null,                                                  // defaultValue
             Collections.singletonList(statement)                   // optionalStatements
         );
     }

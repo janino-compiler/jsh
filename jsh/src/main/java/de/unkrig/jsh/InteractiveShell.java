@@ -2,8 +2,8 @@
 /*
  * jsh - The Java Shell
  *
- * Copyright (c) 2016 Arno Unkrig. All rights reserved.
- * Copyright (c) 2015-2016 TIBCO Software Inc. All rights reserved.
+ * Copyright (c) 2016, Arno Unkrig
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met:
@@ -39,11 +39,11 @@ import org.codehaus.commons.compiler.CompileException;
 import org.codehaus.commons.compiler.IScriptEvaluator;
 import org.codehaus.commons.compiler.samples.DemoBase;
 import org.codehaus.commons.nullanalysis.Nullable;
-import org.codehaus.janino.Java.CompilationUnit.ImportDeclaration;
-import org.codehaus.janino.Java.CompilationUnit.SingleStaticImportDeclaration;
-import org.codehaus.janino.Java.CompilationUnit.SingleTypeImportDeclaration;
-import org.codehaus.janino.Java.CompilationUnit.StaticImportOnDemandDeclaration;
-import org.codehaus.janino.Java.CompilationUnit.TypeImportOnDemandDeclaration;
+import org.codehaus.janino.Java.AbstractCompilationUnit;
+import org.codehaus.janino.Java.AbstractCompilationUnit.SingleStaticImportDeclaration;
+import org.codehaus.janino.Java.AbstractCompilationUnit.SingleTypeImportDeclaration;
+import org.codehaus.janino.Java.AbstractCompilationUnit.StaticImportOnDemandDeclaration;
+import org.codehaus.janino.Java.AbstractCompilationUnit.TypeImportOnDemandDeclaration;
 import org.codehaus.janino.Java.ReferenceType;
 import org.codehaus.janino.Parser;
 import org.codehaus.janino.Scanner;
@@ -214,7 +214,7 @@ class InteractiveShell extends DemoBase {
                     // "StatementEvaluator.cook()" would ALSO parse import declarations, but then they'd only be
                     // effective for ONE statement. Thus we parse them here and add them to the "default imports"
                     // of the StatementEvaluator.
-                    ImportDeclaration id = parser.parseImportDeclaration();
+                    AbstractCompilationUnit.ImportDeclaration id = parser.parseImportDeclaration();
 
                     String imporT = id.accept(new ImportVisitor<String, RuntimeException>() {
 
