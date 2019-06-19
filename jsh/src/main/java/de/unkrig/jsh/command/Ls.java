@@ -2,8 +2,8 @@
 /*
  * jsh - The Java Shell
  *
- * Copyright (c) 2016 Arno Unkrig. All rights reserved.
- * Copyright (c) 2015-2016 TIBCO Software Inc. All rights reserved.
+ * Copyright (c) 2016, Arno Unkrig
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met:
@@ -326,7 +326,6 @@ class Ls extends Cloneable2<Ls> {
 
         private final TimeKind timeKind;
 
-        public
         FilesByTimeComparator(TimeKind timeKind) { this.timeKind = timeKind; }
 
         @NotNullByDefault(false) @Override public int

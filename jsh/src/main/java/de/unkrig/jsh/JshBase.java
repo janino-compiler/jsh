@@ -2,8 +2,8 @@
 /*
  * jsh - The Java Shell
  *
- * Copyright (c) 2016 Arno Unkrig. All rights reserved.
- * Copyright (c) 2015-2016 TIBCO Software Inc. All rights reserved.
+ * Copyright (c) 2016, Arno Unkrig
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met:
@@ -62,15 +62,15 @@ class JshBase {
 
     // ======================================= SHORTHAND COMMANDS =======================================
 
-    public static void cd()               { JshBase.cd.$(); }
-    public static void cd(File dir)       { JshBase.cd.$(dir); }
+    public static void cd()               { JshBase.cd.$();                  }
+    public static void cd(File dir)       { JshBase.cd.$(dir);               }
     public static void cd(String dirName) { JshBase.cd.$(new File(dirName)); }
 
     public static void echo(Object... args) { JshBase.echo.$(args); }
 
     public static void err(@Nullable Object subject) { Brief.print(subject, System.err); }
 
-    public static void exit()           { System.exit(0); }
+    public static void exit()           { System.exit(0);      }
     public static void exit(int status) { System.exit(status); }
 
     public static void ls(File... files) { JshBase.ls.$(files); }
