@@ -104,7 +104,7 @@ class JshBase {
     dateTimeFormat() { return DateFormat.getDateTimeInstance(); }
 
     /**
-     * Shorthand for {@link DateFormat#getDateTimeInstance(int)}.
+     * Shorthand for {@link DateFormat#getDateTimeInstance(int, int)}.
      */
     public static DateFormat
     dateTimeFormat(int dateStyle, int timeStyle) { return DateFormat.getDateTimeInstance(dateStyle, timeStyle); }
