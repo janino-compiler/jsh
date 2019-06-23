@@ -4,7 +4,7 @@
 
   <groupId>de.unkrig</groupId>
   <artifactId>jsh</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.2</version>
   <packaging>jar</packaging>
 
   <name>jsh</name>
@@ -74,6 +74,7 @@
         <version>2.10.4</version>
         <configuration>
           <quiet>true</quiet>
+          <additionalparam>-Xdoclint:none</additionalparam>
         </configuration>
         <executions>
           <execution>
