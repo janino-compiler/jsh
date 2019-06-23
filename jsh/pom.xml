@@ -4,7 +4,7 @@
 
   <groupId>de.unkrig</groupId>
   <artifactId>jsh</artifactId>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.1</version>
   <packaging>jar</packaging>
 
   <name>jsh</name>
@@ -38,7 +38,7 @@
   	<dependency>
   		<groupId>org.codehaus.janino</groupId>
   		<artifactId>janino</artifactId>
-  		<version>3.0.13-SNAPSHOT</version>
+  		<version>3.0.13</version>
   	</dependency>
   	<dependency>
   		<groupId>de.unkrig.commons</groupId>
